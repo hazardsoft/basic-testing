@@ -5,38 +5,7 @@ import {
   SynchronizationFailedError,
   TransferFailedError,
 } from '.';
-import { expect } from '@jest/globals';
-
-interface Constructable {
-  new (...args: unknown[]): unknown;
-}
-
-const toBeTypeOrNull = (received: unknown, constructor: Constructable) => {
-  if (received === null) {
-    return {
-      pass: true,
-      message: () => '',
-    };
-  }
-  const pass =
-    received instanceof constructor ||
-    typeof received === constructor.name.toLowerCase();
-  return {
-    pass,
-    message: () =>
-      pass
-        ? ''
-        : `expected ${received} to be ${constructor.name.toLowerCase()} or null`,
-  };
-};
-
-expect.extend({ toBeTypeOrNull });
-
-declare module 'expect' {
-  interface Matchers<R> {
-    toBeTypeOrNull(type: unknown): R;
-  }
-}
+import lodash from 'lodash';
 
 const initialBalance = 101;
 const invalidaWithdrawalAmount = initialBalance + 1;
@@ -93,7 +62,13 @@ describe('BankAccount', () => {
   });
 
   test('fetchBalance should return number in case if request did not failed', async () => {
-    await expect(account.fetchBalance()).resolves.toBeTypeOrNull(Number);
+    const fetchedBalance = 42;
+    const spy = jest
+      .spyOn(lodash, 'random')
+      .mockReturnValueOnce(fetchedBalance) // used as random balance received
+      .mockReturnValueOnce(1); // used to determine if request is failed, 0 - fail, 1 - success
+    await expect(account.fetchBalance()).resolves.toBe(fetchedBalance);
+    expect(spy).toHaveBeenCalledTimes(2);
   });
 
   test('should set new balance if fetchBalance returned number', async () => {
