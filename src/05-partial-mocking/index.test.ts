@@ -17,10 +17,6 @@ describe('partial mocking', () => {
     jest.unmock('./index');
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   test('mockOne, mockTwo, mockThree should not log into console', () => {
     const consoleSpy = jest.spyOn(console, 'log');
     mockOne();

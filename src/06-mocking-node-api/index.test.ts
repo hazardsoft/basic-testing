@@ -12,10 +12,6 @@ describe('doStuffByTimeout', () => {
     jest.useRealTimers();
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   test('should set timeout with provided callback and timeout', () => {
     const callback = () => console.log('callback call');
     const timeout = 500;
@@ -46,10 +42,6 @@ describe('doStuffByInterval', () => {
     jest.useRealTimers();
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   test('should set interval with provided callback and timeout', () => {
     const callback = () => console.log('callback call');
     const timeout = 500;
@@ -77,10 +69,6 @@ jest.mock('fs/promises');
 
 describe('readFileAsynchronously', () => {
   const filePath = 'fakePath';
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
 
   test('should call join with pathToFile', async () => {
     const spy = jest.spyOn(path, 'join');
